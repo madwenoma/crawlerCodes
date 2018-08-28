@@ -17,6 +17,10 @@ public class SendQQMailUtil {
     final static String receiver = "28223731@qq.com";
 
     public static void main(String[] args) throws AddressException, MessagingException {
+
+    }
+
+    public static void sendMail(String title,String content) throws Exception {
         Properties properties = new Properties();
         properties.put("mail.transport.protocol", "smtp");// 连接协议
         properties.put("mail.smtp.host", "smtp.163.com");// 主机名
@@ -34,9 +38,9 @@ public class SendQQMailUtil {
         message.setRecipients(Message.RecipientType.TO, new InternetAddress[]{new InternetAddress(receiver)});
         //message.setRecipient(Message.RecipientType.TO, new InternetAddress("xxx@qq.com"));//一个收件人
         // 设置邮件标题
-        message.setSubject("xmqtest");
+        message.setSubject(title);
         // 设置邮件内容
-        message.setText("邮件内容邮件内容邮件内容xmqtest");
+        message.setText(content);
         // 得到邮差对象
         Transport transport = session.getTransport();
         // 连接自己的邮箱账户
@@ -45,4 +49,5 @@ public class SendQQMailUtil {
         transport.sendMessage(message, message.getAllRecipients());
         transport.close();
     }
+
 }
