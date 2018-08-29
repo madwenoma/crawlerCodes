@@ -3,6 +3,7 @@ package com.lee.demos;
 import com.lee.mail.SendQQMailUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.helper.StringUtil;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebElement;
@@ -17,6 +18,8 @@ import java.util.List;
  * Created by Administrator on 2018/7/13.
  */
 public class AutoCheckIn {
+
+    private static String pwd = "xxxxxx@";
     public static void main(String[] args) throws Exception {
         System.setProperty("webdriver.chrome.driver", "/opt/google/chrome/chromedriver");
 //        System.setProperty("webdriver.chrome.driver", "D:\\Program Files\\chromedriver.exe");
@@ -33,16 +36,17 @@ public class AutoCheckIn {
         try {
 //            driver.manage().window().maximize();
             String jdResult = jdCheckIn(driver);
-            System.exit(0);
+            System.out.println(jdResult);
             String xijiResult = xiJiCheckIn(driver);
             System.out.println(xijiResult);
             Thread.sleep(2000);
             String kaolaResult = kaolaCheckIn(driver);
             System.out.println(kaolaResult);
+            Thread.sleep(1000);
             SendQQMailUtil.sendMail("AutoCheckResult", xijiResult + "\n" + kaolaResult + "\n" + jdResult);
         } catch (Exception e) {
             e.printStackTrace();
-//            SendQQMailUtil.sendMail("AutoCheckResult", "error exception:" + e.getMessage());
+            SendQQMailUtil.sendMail("AutoCheckResult", "error:" + e.getMessage());
         } finally {
             driver.quit();
         }
@@ -63,24 +67,28 @@ public class AutoCheckIn {
 
         loginname.sendKeys("madwenoma");
         Thread.sleep(2000);
-        password.sendKeys("4220282a@");
-        Thread.sleep(2000);
+        password.sendKeys(pwd);
+        Thread.sleep(1120);
         submit.click();
-        Thread.sleep(2000);
-        FileUtils.copyFile(driver.getScreenshotAs(OutputType.FILE), new File("/home/lee/checkin/jd.png"));
+        Thread.sleep(1030);
+//        FileUtils.copyFile(driver.getScreenshotAs(OutputType.FILE), new File("/home/lee/checkin/jd.png"));
         driver.get("https://vip.jd.com/");
         System.out.println("login over");
         System.out.println(driver.getTitle());
         WebElement signIn = driver.findElementByClassName("sign-in");
-        Thread.sleep(3000);
+        Thread.sleep(1200);
         signIn.click();
         driver.get("https://vip.jd.com/sign/index");
         System.out.println(driver.getTitle());
-        Thread.sleep(2000);
-//        FileUtils.copyFile(driver.getScreenshotAs(OutputType.FILE), new File("/home/lee/checkin/jd.png"));
-        String title = driver.findElementByXPath("//*[@id=\"accordion\"]/div/div[3]/div/div[1]").getText();
-        System.out.println(title);
-        return title;
+        Thread.sleep(1300);
+        driver.get("https://bean.jd.com/myJingBean/list");
+        System.out.println(driver.getTitle());
+        String date = driver.findElementByXPath("//*[@id=\"main\"]/div[4]/div/div[2]/table/tbody/tr[1]/td[1]").getText();
+        String point = driver.findElementByXPath("//*[@id=\"main\"]/div[4]/div/div[2]/table/tbody/tr[1]/td[2]/span").getText();
+        String type = driver.findElementByXPath("//*[@id=\"main\"]/div[4]/div/div[2]/table/tbody/tr[1]/td[3]").getText();
+        String result = StringUtils.joinWith("-", date, point, type);
+        return "jd:" + result;
+
 
     }
 
@@ -91,9 +99,9 @@ public class AutoCheckIn {
         WebElement loginname = driver.findElementByName("uname");
         WebElement password = driver.findElementByName("password");
         WebElement submit = driver.findElementById("btn_login_normal");
-        loginname.sendKeys("madwenoma");
+        loginname.sendKeys("18501170204");
         Thread.sleep(1846);
-        password.sendKeys("4220282a@");
+        password.sendKeys(pwd);
         Thread.sleep(1997);
         submit.click();
         Thread.sleep(2004);
@@ -140,23 +148,19 @@ public class AutoCheckIn {
         WebElement password = driver.findElementByName("password");
         WebElement submit = driver.findElementById("dologin");
         String uname = "killgov@163.com";
-//        String uname = new String("o.noma@163.com".getBytes(), "utf-8");
         loginname.sendKeys(uname);
         System.out.println(loginname.getText());
         Thread.sleep(1846);
-//        String pwd = new String("4220282".getBytes(), "utf-8");
-        String pwd = "4220282a@";
         password.sendKeys(pwd);
         Thread.sleep(1234);
 
         submit.click();
-        Thread.sleep(1998);
-//        FileUtils.writeStringToFile(new File("/home/lee/checkin/login.html"), driver.getPageSource(), false);
+        Thread.sleep(1200);
         driver.get("https://www.kaola.com/activity/flashSaleIndex/show.html?navindex=2&zn=top");
         System.out.println(driver.getTitle());
 //        FileUtils.copyFile(driver.getScreenshotAs(OutputType.FILE), new File("/home/lee/checkin/kaola-order.png"));
 
-        Thread.sleep(2000);
+        Thread.sleep(1100);
 //        System.out.println(driver.findElementById("user163Box").getText());
 
         driver.findElementByClassName("newnav").click();
