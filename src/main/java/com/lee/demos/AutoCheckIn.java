@@ -60,8 +60,10 @@ public class AutoCheckIn {
             SendQQMailUtil.sendMail("AutoCheckResult", result);
         } catch (Exception e) {
             errMsg += e.getMessage();
-            SendQQMailUtil.sendMail("AutoCheckResult", "error:" + errMsg);
         } finally {
+            if (StringUtils.isNoneEmpty(errMsg)) {
+                SendQQMailUtil.sendMail("AutoCheckError:", errMsg);
+            }
             driver.quit();
         }
     }
