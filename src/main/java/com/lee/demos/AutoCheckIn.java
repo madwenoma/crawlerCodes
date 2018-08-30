@@ -3,7 +3,6 @@ package com.lee.demos;
 import com.lee.mail.SendQQMailUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.jsoup.helper.StringUtil;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebElement;
@@ -20,6 +19,7 @@ import java.util.List;
 public class AutoCheckIn {
 
     private static String pwd = "xxxxxx@";
+
     public static void main(String[] args) throws Exception {
         System.setProperty("webdriver.chrome.driver", "/opt/google/chrome/chromedriver");
 //        System.setProperty("webdriver.chrome.driver", "D:\\Program Files\\chromedriver.exe");
@@ -33,20 +33,34 @@ public class AutoCheckIn {
 //        options.addArguments("--proxy-server=http://188.131.133.231:8000");
         options.addArguments("--window-size=1980,1000");
         ChromeDriver driver = new ChromeDriver(options);
+        String errMsg = "";
+        String result = "";
         try {
-//            driver.manage().window().maximize();
             String jdResult = jdCheckIn(driver);
+            result += jdResult + "\n";
             System.out.println(jdResult);
+        } catch (Exception e) {
+            errMsg += e.getMessage();
+        }
+
+        try {
             String xijiResult = xiJiCheckIn(driver);
             System.out.println(xijiResult);
-            Thread.sleep(2000);
+            result += xijiResult + "\n";
+            Thread.sleep(1000);
+        } catch (Exception e) {
+            errMsg += e.getMessage();
+        }
+        try {
+//            driver.manage().window().maximize();
             String kaolaResult = kaolaCheckIn(driver);
             System.out.println(kaolaResult);
+            result += kaolaResult;
             Thread.sleep(1000);
-            SendQQMailUtil.sendMail("AutoCheckResult", xijiResult + "\n" + kaolaResult + "\n" + jdResult);
+            SendQQMailUtil.sendMail("AutoCheckResult", result);
         } catch (Exception e) {
-            e.printStackTrace();
-            SendQQMailUtil.sendMail("AutoCheckResult", "error:" + e.getMessage());
+            errMsg += e.getMessage();
+            SendQQMailUtil.sendMail("AutoCheckResult", "error:" + errMsg);
         } finally {
             driver.quit();
         }
